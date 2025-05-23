@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { darkMode: 'class' }
+  </script>
+  <title>Yewchat!</title>
+</head>
+<body>
+  <!-- optional <div id="root"></div> if you prefer -->
+  <script type="module">
+    import init, { run_app } from "./pkg/wasm.js";
+    async function bootstrap() {
+      await init();    // loads the wasm
+      run_app();       // mounts your <Main/> component
+    }
+    bootstrap();
+  </script>
+</body>
+</html>
