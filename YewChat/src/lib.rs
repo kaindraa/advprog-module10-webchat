@@ -35,15 +35,11 @@ pub enum Route {
 
 pub type User = Rc<UserInner>;
 
-pub type DarkMode = bool;
-
 #[derive(Debug, PartialEq)]
 pub struct UserInner {
     pub username: RefCell<String>,
 }
 
-// toggle html class for dark mode
-use web_sys::window;
 #[function_component(Main)]
 fn main() -> Html {
     let ctx = use_state(|| {
@@ -51,31 +47,14 @@ fn main() -> Html {
             username: RefCell::new("initial".into()),
         })
     });
-    let dark_mode = use_state(|| false);
-    
-    let toggle_dark = {
-        let dark_mode = dark_mode.clone();
-        Callback::from(move |_| {
-            dark_mode.set(!*dark_mode);
-        })
-    };
 
-    let is_dark = *dark_mode;
-    
     html! {
         <ContextProvider<User> context={(*ctx).clone()}>
-        <ContextProvider<DarkMode> context={is_dark}>
-            <div class={if is_dark { "dark" } else { "" }}>
-                <button onclick={toggle_dark} class="fixed top-2 right-2 z-50 bg-gray-200 dark:bg-gray-700 rounded px-3 py-1">
-                    { if is_dark { "☀️" } else { "🌙" } }
-                </button>
-                <BrowserRouter>
-                    <div class="flex w-screen h-screen">
-                        <Switch<Route> render={Switch::render(switch)}/>
-                    </div>
-                </BrowserRouter>
-            </div>
-        </ContextProvider<DarkMode>>
+            <BrowserRouter>
+                <div class="flex w-screen h-screen">
+                    <Switch<Route> render={Switch::render(switch)}/>
+                </div>
+            </BrowserRouter>
         </ContextProvider<User>>
     }
 }
@@ -88,12 +67,9 @@ fn switch(selected_route: &Route) -> Html {
     }
 }
 
-
 #[wasm_bindgen]
 pub fn run_app() -> Result<(), JsValue> {
     wasm_logger::init(wasm_logger::Config::default());
     yew::start_app::<Main>();
     Ok(())
 }
-
-//recommit
